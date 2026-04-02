@@ -201,9 +201,7 @@ export const PUT = withV1ApiWrapper({
 
     const { quotaFull, ...responseData } = updatedResponse;
 
-    // send response update to pipeline
-    // don't await to not block the response
-    sendToPipeline({
+    await sendToPipeline({
       event: "responseUpdated",
       environmentId: survey.environmentId,
       surveyId: survey.id,
@@ -211,9 +209,7 @@ export const PUT = withV1ApiWrapper({
     });
 
     if (updatedResponse.finished) {
-      // send response to pipeline
-      // don't await to not block the response
-      sendToPipeline({
+      await sendToPipeline({
         event: "responseFinished",
         environmentId: survey.environmentId,
         surveyId: survey.id,

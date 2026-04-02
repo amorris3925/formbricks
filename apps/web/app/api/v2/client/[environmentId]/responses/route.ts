@@ -165,7 +165,7 @@ export const POST = async (request: Request, context: Context): Promise<Response
   }
   const { quotaFull, ...responseData } = response;
 
-  sendToPipeline({
+  await sendToPipeline({
     event: "responseCreated",
     environmentId,
     surveyId: responseData.surveyId,
@@ -173,7 +173,7 @@ export const POST = async (request: Request, context: Context): Promise<Response
   });
 
   if (responseData.finished) {
-    sendToPipeline({
+    await sendToPipeline({
       event: "responseFinished",
       environmentId,
       surveyId: responseData.surveyId,

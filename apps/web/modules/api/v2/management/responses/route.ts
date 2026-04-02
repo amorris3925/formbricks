@@ -158,7 +158,7 @@ export const POST = async (request: Request) =>
       // Fetch created response with relations for pipeline
       const createdResponseForPipeline = await getResponseForPipeline(createResponseResult.data.id);
       if (createdResponseForPipeline.ok) {
-        sendToPipeline({
+        await sendToPipeline({
           event: "responseCreated",
           environmentId: environmentId,
           surveyId: body.surveyId,
@@ -166,7 +166,7 @@ export const POST = async (request: Request) =>
         });
 
         if (createResponseResult.data.finished) {
-          sendToPipeline({
+          await sendToPipeline({
             event: "responseFinished",
             environmentId: environmentId,
             surveyId: body.surveyId,
