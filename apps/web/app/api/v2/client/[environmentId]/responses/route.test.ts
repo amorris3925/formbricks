@@ -87,6 +87,16 @@ describe("POST /api/v2/client/[environmentId]/responses", () => {
   });
 
   test("returns success and enqueues pipeline jobs for created and finished responses", async () => {
+    let releaseFirstPipelineSend: (() => void) | undefined;
+    vi.mocked(sendToPipeline)
+      .mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            releaseFirstPipelineSend = resolve;
+          })
+      )
+      .mockResolvedValueOnce(undefined);
+
     const request = new Request(`http://localhost/api/v2/client/${environmentId}/responses`, {
       method: "POST",
       headers: {
@@ -105,11 +115,26 @@ describe("POST /api/v2/client/[environmentId]/responses", () => {
       }),
     });
 
-    const response = await POST(request, {
+    const responsePromise = POST(request, {
       params: Promise.resolve({
         environmentId,
       }),
     });
+
+    let responseSettled = false;
+    void responsePromise.then(() => {
+      responseSettled = true;
+    });
+
+    await vi.waitFor(() => {
+      expect(sendToPipeline).toHaveBeenCalledTimes(1);
+    });
+
+    expect(responseSettled).toBe(false);
+
+    releaseFirstPipelineSend?.();
+
+    const response = await responsePromise;
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
