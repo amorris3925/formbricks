@@ -32,13 +32,10 @@ vi.mock("@/lib/survey/service", () => ({
   getSurvey: vi.fn(),
 }));
 
-vi.mock("@/modules/api/lib/validation", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/modules/api/lib/validation")>();
-  return {
-    ...actual,
-    validateResponseData: vi.fn(),
-  };
-});
+vi.mock("@/modules/api/lib/validation", () => ({
+  formatValidationErrorsForV1Api: vi.fn(),
+  validateResponseData: vi.fn(),
+}));
 
 vi.mock("@/modules/api/v2/lib/element", () => ({
   validateOtherOptionLengthForMultipleChoice: vi.fn(),
