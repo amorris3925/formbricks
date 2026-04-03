@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./apps/web/Dockerfile
           push: true
           tags: ghcr.io/amorris3925/formbricks-unlocked:latest
           platforms: linux/amd64
