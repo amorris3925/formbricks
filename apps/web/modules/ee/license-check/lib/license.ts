@@ -643,52 +643,7 @@ export const getEnterpriseLicense = reactCache(async (): Promise<TEnterpriseLice
     fallbackLevel: "live" as const,
     status: "active" as const,
   };
-  // Original code below (unreachable):
-  {
-  if (
-    process.env.NODE_ENV !== "test" &&
-    memoryCache &&
-    Date.now() - memoryCache.timestamp < MEMORY_CACHE_TTL_MS
-  ) {
-    return memoryCache.data;
-  }
-
-  if (getEnterpriseLicensePromise) return getEnterpriseLicensePromise;
-
-  getEnterpriseLicensePromise = (async () => {
-    let liveLicenseDetails: TEnterpriseLicenseDetails | null = null;
-
-    try {
-      liveLicenseDetails = await fetchLicense();
-    } catch (error) {
-      if (error instanceof LicenseApiError && (error.status === 400 || error.status === 403)) {
-        const status = error.status === 400 ? "invalid_license" : "instance_mismatch";
-        const invalidResult: TEnterpriseLicenseResult = {
-          active: false,
-          features: DEFAULT_FEATURES,
-          lastChecked: new Date(),
-          isPendingDowngrade: false,
-          fallbackLevel: "default" as const,
-          status,
-        };
-        memoryCache = { data: invalidResult, timestamp: Date.now() };
-        return invalidResult;
-      }
-      // Other errors: liveLicenseDetails stays null (treated as unreachable)
-    }
-
-    return computeLicenseState(liveLicenseDetails);
-  })();
-
-  getEnterpriseLicensePromise
-    .finally(() => {
-      getEnterpriseLicensePromise = null;
-    })
-    .catch(() => {});
-
-  return getEnterpriseLicensePromise;
 });
-
 export const getLicenseFeatures = async (): Promise<TEnterpriseLicenseFeatures | null> => {
   try {
     const licenseState = await getEnterpriseLicense();
