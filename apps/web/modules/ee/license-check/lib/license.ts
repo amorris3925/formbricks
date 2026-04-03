@@ -619,6 +619,32 @@ const computeLicenseState = async (
 };
 
 export const getEnterpriseLicense = reactCache(async (): Promise<TEnterpriseLicenseResult> => {
+  // Self-hosted: all enterprise features unlocked
+  return {
+    active: true,
+    features: {
+      isMultiOrgEnabled: true,
+      projects: null,
+      twoFactorAuth: true,
+      sso: true,
+      whitelabel: true,
+      removeBranding: true,
+      contacts: true,
+      aiSmartTools: true,
+      aiDataAnalysis: true,
+      saml: true,
+      spamProtection: true,
+      auditLogs: true,
+      accessControl: true,
+      quotas: true,
+    },
+    lastChecked: new Date(),
+    isPendingDowngrade: false,
+    fallbackLevel: "live" as const,
+    status: "active" as const,
+  };
+  // Original code below (unreachable):
+  {
   if (
     process.env.NODE_ENV !== "test" &&
     memoryCache &&
