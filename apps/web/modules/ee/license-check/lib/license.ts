@@ -620,7 +620,7 @@ const computeLicenseState = async (
 
 export const getEnterpriseLicense = reactCache(async (): Promise<TEnterpriseLicenseResult> => {
   // Self-hosted: all enterprise features unlocked
-  void memoryCache; // suppress unused variable error
+  void memoryCache; void MEMORY_CACHE_TTL_MS; void getEnterpriseLicensePromise; // suppress unused variable errors
   return {
     active: true,
     features: {
